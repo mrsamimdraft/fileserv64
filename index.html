@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL to Base64 Converter</title>
+</head>
+<body>
+    <input type="text" id="urlInput" placeholder="Enter URL here">
+    <button onclick="convertToBase64()">Convert to Base64</button>
+    <textarea id="base64Output" rows="10" cols="50"></textarea>
+    <button id="copyButton" onclick="copyToClipboard()" disabled>Copy</button>
+
+    <script>
+        function convertToBase64() {
+            var url = document.getElementById('urlInput').value;
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function() {
+                        var base64String = reader.result;
+                        document.getElementById('base64Output').value = base64String;
+                        document.getElementById('copyButton').disabled = false;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function copyToClipboard() {
+            var base64Output = document.getElementById('base64Output');
+            base64Output.select();
+            base64Output.setSelectionRange(0, 99999); /* For mobile devices */
+
+            /* Copy the text inside the text field */
+            navigator.clipboard.writeText(base64Output.value);
+
+            /* Alert the copied text */
+            alert("Copied the text: " + base64Output.value);
+        }
+    </script>
+</body>
+</html>
